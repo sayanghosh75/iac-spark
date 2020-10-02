@@ -1,0 +1,27 @@
+---
+- name: Find the spark and scala directories to copy
+  find:
+    paths: "{{ item.value.extract_path }}"
+    recurse: no
+    file_type: directory
+  register: results
+
+- name: Display directories
+  debug:
+    #msg: "{{ item }}"
+    msg: "{{ results.files[0].path }}"
+  #with_items: "{{ results.results | map(attribute='files') | list }}"
+
+- name: Move files from extraction to install folder
+  copy:
+    remote_src: true
+    src: "{{ results.files[0].path }}/"
+    dest: "{{ item.value.install_path }}"
+
+- name: Remove extraction folders
+  file:
+    path: "{{ item.value.extract_path }}"
+    state: absent
+
+...       
+

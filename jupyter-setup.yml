@@ -1,0 +1,52 @@
+---
+
+- name: Configure jupyter notebook for remote access
+  block:
+    - name: Check if jupyter notebook config file exists
+      stat:
+        path:  ~/.jupyter/jupyter_notebook_config.py
+      register: jupyter
+      become: false
+
+    - name: Check if jupyter notebook exists
+      fail:
+        msg: "Jupyter Notebook config file doesn't exist. Creating..."
+      when: not jupyter.stat.exists
+
+  rescue:
+    - name: Execute jupyter notebook configurator
+      command: jupyter notebook --generate-config -y
+      become: false
+
+  always:
+    - name: Configure jupyter notebook to bind to all IPs
+      become: false
+      lineinfile:
+        line: "c.NotebookApp.ip = '*'"
+        path: ~/.jupyter/jupyter_notebook_config.py
+        state: present
+        #state: absent
+
+    - name: Configure jupyter notebook to use port 8888
+      become: false
+      lineinfile:
+        line: "c.NotebookApp.port = 8888"
+        path: ~/.jupyter/jupyter_notebook_config.py
+        state: present
+        #state: absent
+
+    - name: Configure jupyter notebook to not open the browser upon start
+      become: false
+      lineinfile:
+        line: "c.NotebookApp.open_browser = False"
+        path: ~/.jupyter/jupyter_notebook_config.py
+        state: present
+        #state: absent
+
+    - name: Configure firewall to open Jupyter Notebook port
+      firewalld:
+        port: 8888/tcp
+        state: enabled
+        immediate: true
+        permanent: true
+...

@@ -1,0 +1,11 @@
+---
+
+- name: Confirm python packages are installed
+  pip:
+    name: "{{ item.value.name }}"
+    version: "{{ item.value.version }}"
+    state: present
+    extra_args: --no-cache-dir
+  ignore_errors: true
+
+...

@@ -6,6 +6,10 @@ DummyHostIBM
 [AWS_Servers]
 DummyHostAWS
 
+[sparklers:children]
+AWS_Servers
+IBM_Servers
+
 #[Azure_Servers]
 
 #[GCP_Servers]

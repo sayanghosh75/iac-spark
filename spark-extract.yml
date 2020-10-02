@@ -1,0 +1,27 @@
+---
+    - name: Create the extraction directories
+      file:
+        path: "{{ item.value.extract_path }}"
+        state: directory
+        mode: 0755
+
+    - name: Create the installation directories
+      file:
+        path: "{{ item.value.install_path }}"
+        state: directory
+        mode: 0755
+
+    - name: Get the Scala and Spark distributions
+      get_url:
+        url: "{{ item.value.url }}"
+        dest: "{{ distro_path }}"
+        mode: '0644'
+        selevel: 's0'
+
+    - name: Unarchive the Scala and Spark distributions
+      unarchive:
+        src:  "{{ distro_path }}/{{ item.value.file }}"
+        dest: "{{ item.value.extract_path }}"
+        remote_src: yes
+...       
+
