@@ -125,5 +125,14 @@
 
     - name: configure jupyter notebook
       include_tasks: jupyter-setup.yml
+
+    - name: Update PYTHONPATH for use with jupyter notebooks 
+      become: false
+      lineinfile:
+        line: "export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH"
+        path: ~/.bashrc
+        state: present
+        #state: absent
+
 ...       
 
